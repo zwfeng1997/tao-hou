@@ -1,0 +1,40 @@
+commodity
+	belong那一一家店
+	id: 几号
+	price:价格
+	title 商品名称
+	desc: 描述
+	imgList: 图片
+comm
+	id 几号
+	img
+	price:价格
+	title 商品名称
+
+shoppingCar
+	id用户
+	cartList一家的
+		title哪一家店
+		itemList
+			id
+			price
+			desc
+			num
+			sele
+order
+	用户id
+	list
+		title哪一家店
+		id
+		desc
+		num
+		price
+		evaluate
+evaluate
+	id用户
+	list 
+		imgUsre
+		name
+		img
+		
+			
