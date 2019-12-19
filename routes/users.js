@@ -59,7 +59,8 @@ router.post('/signup', async (ctx) => {
   let nuser = await User.create({
     username,
     password,
-    email
+    email,
+    userImg: 'http://localhost:3000/uploads/timg.jfif'
   })
 
   if (nuser) {
@@ -159,6 +160,7 @@ router.post('/verify', async (ctx) => {
     subject: '仿淘宝网注册码',
     html: `您在仿淘宝网的注册码是${ko.code}`
   }
+  console.log(ko.code)
   await transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log(error)
@@ -188,11 +190,17 @@ router.get('/exit', async (ctx, nexr) => {
 
 router.get('/getUser', async (ctx) => {
   if (ctx.isAuthenticated()) {
-    const {username, email} = ctx.session.passport.user
+    const { username } = ctx.session.passport.user
+    let email, userImg
+    let data = await User.findOne({username: username}, (err, user) => {
+      email = user.email
+      userImg = user.userImg
+    })
     ctx.body = {
       code: 0,
       user: username,
-      email
+      email,
+      img: userImg
     }
   } else {
     ctx.body = {
@@ -202,4 +210,20 @@ router.get('/getUser', async (ctx) => {
     }
   }
 })
+
+router.post('/updateImg', async (ctx) => {
+  const {url, username} = ctx.request.body
+  let data = await User.update({username: username}, {userImg: url}, (err, raw) => {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log(raw)
+    }
+  })
+  ctx.body = {
+    code: -1,
+    data
+  }
+})
+
 module.exports = router

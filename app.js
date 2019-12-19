@@ -7,19 +7,29 @@ const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const session = require('koa-generic-session')
 const Redis = require('koa-redis')
+const koaBody = require('koa-body');
 const mongoose = require('mongoose')
+const serve = require('koa-static');
 const index = require('./routes/index')
 const users = require('./routes/users')
 const comm = require('./routes/commodity')
 const cart = require('./routes/shoppingCart')
 const order = require('./routes/order')
 const evaluate = require('./routes/evaluate')
-
+const upload = require('./routes/upload')
 const dbConfig = require('./dbs/config')
 const passport = require('./dbs/utils/passport')
 
+const home   = serve(__dirname+'/public/');
 // error handler
 onerror(app)
+app.use(koaBody({
+  multipart: true,
+  formidable: {
+    maxFileSize: 200*1024*1024,
+    keepExtensions: true
+  }
+}));
 
 app.keys=['key', 'keyskeys']
 app.proxy = true
@@ -67,7 +77,8 @@ app.use(comm.routes(), comm.allowedMethods())
 app.use(cart.routes(), cart.allowedMethods())
 app.use(order.routes(), order.allowedMethods())
 app.use(evaluate.routes(), evaluate.allowedMethods())
-
+app.use(upload.routes(), upload.allowedMethods())
+app.use(home);
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)

@@ -57,7 +57,6 @@ router.post('/addshoppingCart', async (ctx) => {
 
 router.post('/userId', async (ctx) => {
   let name = ctx.request.body.name
-  console.log(name,'-----')
   let data = await UserId.findOne({username: name})
   ctx.body = {
     code: -1,
